@@ -1,0 +1,6 @@
+
+---@type HydrationElement[]
+HYDRATION_FUNCTIONS = {}
+HYDRATION_SIZE = 0
+
+HYDRATION_MODULE = {}
