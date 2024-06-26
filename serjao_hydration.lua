@@ -5,7 +5,7 @@ HYDRATION_SIZE = 0
 SCRIPT = ""
 HYDRATION_MODULE = {}
 
-HYDRATION_SCRIPT = "\nalert(\"aaaa\")"
+HYDRATION_SCRIPT = "\nasync function hydration_perform(route,headers){\n     let result = await  fetch(route, {\n         headers: headers,\n         method:\"POST\"\n     })\n    let result_in_json = await  result.json()\n    result_in_json.forEach(e =>{\n        let action = e[\"func_name\"]\n        let args = e[\"args\"]\n        let evaluation = action +\"(args)\"\n        try  {\n            eval(evaluation)\n        }catch (error){\n            console.log(error)\n        }\n    })\n}"
 
 
 ---@param headders HydrationHeader[]
@@ -16,7 +16,7 @@ function Private_hdration_add_headers(headders,headders_size)
      for i=1,headders_size do
           local current = headders[i]
 
-          text = text.."headers['"..current.key.."'] ="..current.value..";\n"
+          text = text.."\theaders['"..current.key.."'] ="..current.value..";\n"
      end
     return text
 end
@@ -27,11 +27,19 @@ end
 HYDRATION_MODULE.inputId = function (id)
     return "document.getElementById('"..id.."').value"
 end
+---@param id string
+---@return string
+HYDRATION_MODULE.arg = function (name)
+    return "args['"..name.."']"
+end
 
 
-HYDRATION_MODULE.create_hydration = function(name)
+HYDRATION_MODULE.create_hydration = function(route)
+    local formatted_name = string.gsub(route,"/","")
+    formatted_name = "hydration_func_"..formatted_name
     local created = {
-        name=name,
+        route=route,
+        name=formatted_name,
         headers={},
         headers_size =0
     }
@@ -55,9 +63,10 @@ HYDRATION_MODULE.create_script = function()
 	for i=1,HYDRATION_SIZE do
 	    local current = HYDRATION_FUNCTIONS[i]
 
-		text = text.."function "..current.name.."(args){\n"
+		text = text.."async function "..current.name.."(args){\n"
 		text = text.."let headers = {}\n"
         text = text..Private_hdration_add_headers(current.headers,current.headers_size)
+        text = text.."await hydration_perform('"..current.route.."',headers);\n"
 		text = text.."}\n"
 	end
 
@@ -75,11 +84,13 @@ return HYDRATION_MODULE
 
 ---@class HydrationElement
 ---@field name string
+---@field route string
 ---@field headers HydrationHeader[]
 ---@field headers_size number
 ---@field add_header fun(key:string, value:string):HydrationElement
 
 ---@class HydrationModule
----@field create_hydration fun(name:string):HydrationElement
+---@field create_hydration fun(route:string):HydrationElement
 ---@field inputid fun(id:string):string
+---@field arg fun(id:string):string
 ---@field create_script fun():string"

@@ -1,8 +1,11 @@
 
 
-HYDRATION_MODULE.create_hydration = function(name)
+HYDRATION_MODULE.create_hydration = function(route)
+    local formatted_name = string.gsub(route,"/","")
+    formatted_name = "hydration_func_"..formatted_name
     local created = {
-        name=name,
+        route=route,
+        name=formatted_name,
         headers={},
         headers_size =0
     }
@@ -26,9 +29,10 @@ HYDRATION_MODULE.create_script = function()
 	for i=1,HYDRATION_SIZE do
 	    local current = HYDRATION_FUNCTIONS[i]
 
-		text = text.."function "..current.name.."(args){\n"
+		text = text.."async function "..current.name.."(args){\n"
 		text = text.."let headers = {}\n"
         text = text..Private_hdration_add_headers(current.headers,current.headers_size)
+        text = text.."await hydration_perform('"..current.route.."',headers);\n"
 		text = text.."}\n"
 	end
 
