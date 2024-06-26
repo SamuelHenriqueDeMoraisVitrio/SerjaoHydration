@@ -3,10 +3,25 @@
 local serjao = require("serjao_berranteiro/serjao_berranteiro")
 local hy = require("serjao_hydration")
 
-local add_num = hy.create_bridge("/aaa","teste")
-add_num.add_header("teste",hy.inputId("aaa"))
-add_num.add_header("b",hy.arg("teste"))
 
 
+local increment = hy.create_bridge("/increment")
+increment.add_header("num_val",hy.inputId("num"))
 
-io.open("test.js","w"):write(hy.create_script())
+
+---@param request Request
+local function whatever_name(request)
+
+    if request.route ~= "/increment" then
+        return body(
+                h3("0",{id="num"}),
+                button("increment ",{onclick=increment.call()})
+        )
+    end
+
+  return "Hello Word", 400
+
+end
+
+serjao.server(3000,4000, whatever_name)
+

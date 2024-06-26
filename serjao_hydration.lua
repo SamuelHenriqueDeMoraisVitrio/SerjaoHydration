@@ -5,32 +5,8 @@ HYDRATION_SIZE = 0
 SCRIPT = ""
 HYDRATION_MODULE = {}
 
-HYDRATION_SCRIPT = "\nasync function hydration_perform(route,headers){\n     let result = await  fetch(route, {\n         headers: headers,\n         method:\"POST\"\n     })\n    let result_in_json = await  result.json()\n    result_in_json.forEach(e =>{\n        let action = e[\"func_name\"]\n        let args = e[\"args\"]\n        let evaluation = action +\"(args)\"\n        try  {\n            eval(evaluation)\n        }catch (error){\n            console.log(error)\n        }\n    })\n}"
+HYDRATION_SCRIPT = "\nfunction Hydration_set_input_id(args){\n    document.getElementById(args.id).value = args.value\n}\nfunction Hydration_replace_element_by_id(args){\n    document.getElementById(args.id).innerHTML = args.value\n}\n  function hydration_generate_element_evaluation(element){\n    let action = element[\"func_name\"]\n    let args = element[\"args\"]\n    let evaluation = action +\"(args)\"\n    try  {\n        eval(evaluation)\n    }catch (error){\n        console.log(error)\n    }\n\n}\nasync function hydration_perform(route,headers){\n     let result = await  fetch(route, {\n         headers: headers,\n         method:\"POST\"\n     })\n    let result_in_json = await  result.json()\n\n    if(result_in_json.constructor===Object){\n        hydration_generate_element_evaluation(result_in_json)\n        return\n    }\n    if(result_in_json.constructor === Array){\n        result_in_json.forEach(e =>{\n            hydration_generate_element_evaluation(e)\n        })\n    }\n\n}"
 
-
----@param headders HydrationHeader[]
----@param headders_size number
----@return string
-function Private_hdration_add_headers(headders,headders_size)
-    local text = ""
-     for i=1,headders_size do
-          local current = headders[i]
-          text = text.."\theaders['"..current.key.."'] ="..current.value..";\n"
-     end
-    return text
-end
-
-
----@param id string
----@return string
-HYDRATION_MODULE.inputId = function (id)
-    return "document.getElementById('"..id.."').value"
-end
----@param id string
----@return string
-HYDRATION_MODULE.arg = function (name)
-    return "args['"..name.."']"
-end
 
 
 HYDRATION_MODULE.create_bridge = function(route,name)
@@ -48,6 +24,13 @@ HYDRATION_MODULE.create_bridge = function(route,name)
 
     HYDRATION_SIZE = HYDRATION_SIZE +1
     HYDRATION_FUNCTIONS[HYDRATION_SIZE] = created
+    created.call  = function (args)
+        if args then
+            	return created.name.."("..args..")"
+        end
+        return created.name.."()"
+
+    end
 
     created.add_header = function (key,value)
     	   created.headers_size  = created.headers_size+1
@@ -58,6 +41,7 @@ HYDRATION_MODULE.create_bridge = function(route,name)
    return created
 
 end
+
 
 
 HYDRATION_MODULE.create_script = function()
@@ -79,10 +63,54 @@ end
 return HYDRATION_MODULE
 
 
+---@param headders HydrationHeader[]
+---@param headders_size number
+---@return string
+function Private_hdration_add_headers(headders,headders_size)
+    local text = ""
+     for i=1,headders_size do
+          local current = headders[i]
+          text = text.."\theaders['"..current.key.."'] ="..current.value..";\n"
+     end
+    return text
+end
+
+HYDRATION_MODULE.set_input_by_id = function (id,value)
+	return {
+	  func_name = "Hydration_set_input_id",
+	  args={value=value,id=id}
+	}
+end
+HYDRATION_MODULE.Hydration_replace_element_by_id = function (id,value)
+	return {
+	  func_name = "Hydration_replace_element_by_id",
+	  args={value=value,id=id}
+	}
+end
+
+
+
+
+---@param id string
+---@return string
+HYDRATION_MODULE.inputId = function (id)
+    return "document.getElementById('"..id.."').value"
+end
+---@param id string
+---@return string
+HYDRATION_MODULE.arg = function (name)
+    return "args['"..name.."']"
+end
+
 
 ---@class HydrationHeader
 ---@field key string
 ---@field value string
+
+
+---@class HydrationResponse
+--_@field func_name string
+---@field args table
 
 ---@class HydrationElement
 ---@field name string
@@ -90,9 +118,13 @@ return HYDRATION_MODULE
 ---@field headers HydrationHeader[]
 ---@field headers_size number
 ---@field add_header fun(key:string, value:string):HydrationElement
+---#field call fun(element:args):string
+
 
 ---@class HydrationModule
 ---@field create_bridge fun(route:string,name:string | nil):HydrationElement
 ---@field inputid fun(id:string):string
 ---@field arg fun(id:string):string
----@field create_script fun():string"
+---@field create_script fun():string
+---@field set_input_by_id fun(id:string,name:string):HydrationResponse
+---@field Hydration_replace_element_by_id fun(id:string,name:string):HydrationResponse"

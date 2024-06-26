@@ -16,7 +16,11 @@ HYDRATION_MODULE.create_bridge = function(route,name)
     HYDRATION_SIZE = HYDRATION_SIZE +1
     HYDRATION_FUNCTIONS[HYDRATION_SIZE] = created
     created.call  = function (args)
-    	return created.name.."("..args..")"
+        if args then
+            	return created.name.."("..args..")"
+        end
+        return created.name.."()"
+
     end
 
     created.add_header = function (key,value)
@@ -28,22 +32,3 @@ HYDRATION_MODULE.create_bridge = function(route,name)
    return created
 
 end
-
-
-HYDRATION_MODULE.create_script = function()
-	local text = HYDRATION_SCRIPT.."\n"
-	for i=1,HYDRATION_SIZE do
-	    local current = HYDRATION_FUNCTIONS[i]
-
-		text = text.."async function "..current.name.."(args){\n"
-		text = text.."let headers = {}\n"
-        text = text..Private_hdration_add_headers(current.headers,current.headers_size)
-        text = text.."await hydration_perform('"..current.route.."',headers);\n"
-		text = text.."}\n"
-	end
-
-	return text
-end
-
----@type HydrationModule
-return HYDRATION_MODULE
