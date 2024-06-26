@@ -32,8 +32,6 @@ for i =1,size do
     script_content = script_content..formated_content
 end
 script_content = script_content..'"'
-final_text = globals.."\n"..script_content.."\n"..final_text..main
+final_text = globals.."\n"..script_content.."\n"..final_text.."\n"..main
 
-
-final_text = final_text..'"'
 dtw.write_file("serjao_hydration.lua",final_text)

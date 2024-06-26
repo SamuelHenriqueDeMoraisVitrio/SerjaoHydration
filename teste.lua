@@ -14,6 +14,7 @@ local function whatever_name(request)
 
     if request.route ~= "/increment" then
         return body(
+                script(hy.create_script()),
                 h3("0",{id="num"}),
                 button("increment ",{onclick=increment.call()})
         )
