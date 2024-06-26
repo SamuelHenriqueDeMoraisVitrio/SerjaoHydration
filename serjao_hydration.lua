@@ -59,9 +59,6 @@ HYDRATION_MODULE.create_script = function()
 	return text
 end
 
----@type HydrationModule
-return HYDRATION_MODULE
-
 
 ---@param headders HydrationHeader[]
 ---@param headders_size number
@@ -127,4 +124,7 @@ end
 ---@field arg fun(id:string):string
 ---@field create_script fun():string
 ---@field set_input_by_id fun(id:string,name:string):HydrationResponse
----@field Hydration_replace_element_by_id fun(id:string,name:string):HydrationResponse"
+---@field Hydration_replace_element_by_id fun(id:string,name:string):HydrationResponse
+---@type HydrationModule
+return HYDRATION_MODULE
+"

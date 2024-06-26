@@ -7,12 +7,15 @@ local final_text = ""
 
 local lua_files,size = dtw.list_files_recursively("serjao_hydration",true)
 local globals = ""
+local main = ""
 
 for i=1,size do
 	local current = lua_files[i]
 	local name = dtw.newPath(current).get_name()
 	if name == "globals.lua" then
 		globals = dtw.load_file(current)
+	elseif name == "main.lua" then
+		main =dtw.load_file(current)
 	else
 	    final_text = final_text.."\n"..dtw.load_file(current)
 	end
@@ -29,7 +32,7 @@ for i =1,size do
     script_content = script_content..formated_content
 end
 script_content = script_content..'"'
-final_text = globals.."\n"..script_content.."\n"..final_text
+final_text = globals.."\n"..script_content.."\n"..final_text..main
 
 
 final_text = final_text..'"'
