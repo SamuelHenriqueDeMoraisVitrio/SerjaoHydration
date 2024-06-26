@@ -15,6 +15,9 @@ HYDRATION_MODULE.create_bridge = function(route,name)
 
     HYDRATION_SIZE = HYDRATION_SIZE +1
     HYDRATION_FUNCTIONS[HYDRATION_SIZE] = created
+    created.call  = function (args)
+    	return created.name.."("..args..")"
+    end
 
     created.add_header = function (key,value)
     	   created.headers_size  = created.headers_size+1
