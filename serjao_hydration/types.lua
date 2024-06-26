@@ -4,6 +4,11 @@
 ---@field key string
 ---@field value string
 
+
+---@class HydrationResponse
+--_@field func_name string
+---@field args table
+
 ---@class HydrationElement
 ---@field name string
 ---@field route string
@@ -18,3 +23,6 @@
 ---@field inputid fun(id:string):string
 ---@field arg fun(id:string):string
 ---@field create_script fun():string
+---@field set_input_by_id fun(id:string,name:string):HydrationResponse
+---@field Hydration_replace_element_by_id fun(id:string,name:string):HydrationResponse
+
