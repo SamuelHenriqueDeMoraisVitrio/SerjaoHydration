@@ -2,9 +2,10 @@
 ---@type HydrationElement[]
 HYDRATION_FUNCTIONS = {}
 HYDRATION_SIZE = 0
-
+SCRIPT = ""
 HYDRATION_MODULE = {}
 
+HYDRATION_SCRIPT = "\nalert(\"aaaa\")"
 
 
 ---@param headders HydrationHeader[]
@@ -15,9 +16,16 @@ function Private_hdration_add_headers(headders,headders_size)
      for i=1,headders_size do
           local current = headders[i]
 
-          text = text.."headers['"..current.key.."'] ="..current.value.."\n"
+          text = text.."headers['"..current.key.."'] ="..current.value..";\n"
      end
     return text
+end
+
+
+---@param id string
+---@return string
+HYDRATION_MODULE.inputId = function (id)
+    return "document.getElementById('"..id.."').value"
 end
 
 
@@ -43,7 +51,7 @@ end
 
 
 HYDRATION_MODULE.create_script = function()
-	local text = ""
+	local text = HYDRATION_SCRIPT.."\n"
 	for i=1,HYDRATION_SIZE do
 	    local current = HYDRATION_FUNCTIONS[i]
 
@@ -52,6 +60,7 @@ HYDRATION_MODULE.create_script = function()
         text = text..Private_hdration_add_headers(current.headers,current.headers_size)
 		text = text.."}\n"
 	end
+
 	return text
 end
 
@@ -72,4 +81,5 @@ return HYDRATION_MODULE
 
 ---@class HydrationModule
 ---@field create_hydration fun(name:string):HydrationElement
----@field create_script fun():string
+---@field inputid fun(id:string):string
+---@field create_script fun():string"

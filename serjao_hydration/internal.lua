@@ -7,7 +7,7 @@ function Private_hdration_add_headers(headders,headders_size)
      for i=1,headders_size do
           local current = headders[i]
 
-          text = text.."headers['"..current.key.."'] ="..current.value.."\n"
+          text = text.."headers['"..current.key.."'] ="..current.value..";\n"
      end
     return text
 end

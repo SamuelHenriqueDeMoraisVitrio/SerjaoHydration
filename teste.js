@@ -1,4 +1,6 @@
+
+alert("aaaa")
 function teste(args){
 let headers = {}
-headers['teste'] =aaa
+headers['teste'] =document.getElementById('aaa').value;
 }

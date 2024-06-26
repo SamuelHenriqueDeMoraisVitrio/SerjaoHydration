@@ -2,5 +2,5 @@
 ---@type HydrationElement[]
 HYDRATION_FUNCTIONS = {}
 HYDRATION_SIZE = 0
-
+SCRIPT = ""
 HYDRATION_MODULE = {}

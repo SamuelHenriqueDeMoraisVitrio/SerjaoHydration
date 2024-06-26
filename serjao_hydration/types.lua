@@ -12,4 +12,5 @@
 
 ---@class HydrationModule
 ---@field create_hydration fun(name:string):HydrationElement
+---@field inputid fun(id:string):string
 ---@field create_script fun():string
