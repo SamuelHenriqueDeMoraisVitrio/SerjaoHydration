@@ -15,7 +15,6 @@ function Private_hdration_add_headers(headders,headders_size)
     local text = ""
      for i=1,headders_size do
           local current = headders[i]
-
           text = text.."\theaders['"..current.key.."'] ="..current.value..";\n"
      end
     return text
@@ -34,9 +33,12 @@ HYDRATION_MODULE.arg = function (name)
 end
 
 
-HYDRATION_MODULE.create_hydration = function(route)
-    local formatted_name = string.gsub(route,"/","")
-    formatted_name = "hydration_func_"..formatted_name
+HYDRATION_MODULE.create_bridge = function(route,name)
+    local formatted_name =  name
+    if name == nil then
+        formatted_name = string.gsub(route,"/","")
+        formatted_name = "hydration_func_"..formatted_name
+    end
     local created = {
         route=route,
         name=formatted_name,
@@ -90,7 +92,7 @@ return HYDRATION_MODULE
 ---@field add_header fun(key:string, value:string):HydrationElement
 
 ---@class HydrationModule
----@field create_hydration fun(route:string):HydrationElement
+---@field create_bridge fun(route:string,name:string | nil):HydrationElement
 ---@field inputid fun(id:string):string
 ---@field arg fun(id:string):string
 ---@field create_script fun():string"

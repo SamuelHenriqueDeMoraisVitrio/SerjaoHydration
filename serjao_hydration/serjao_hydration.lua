@@ -1,8 +1,11 @@
 
 
-HYDRATION_MODULE.create_hydration = function(route)
-    local formatted_name = string.gsub(route,"/","")
-    formatted_name = "hydration_func_"..formatted_name
+HYDRATION_MODULE.create_bridge = function(route,name)
+    local formatted_name =  name
+    if name == nil then
+        formatted_name = string.gsub(route,"/","")
+        formatted_name = "hydration_func_"..formatted_name
+    end
     local created = {
         route=route,
         name=formatted_name,

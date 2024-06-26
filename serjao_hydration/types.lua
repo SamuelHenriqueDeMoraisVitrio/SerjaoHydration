@@ -12,7 +12,7 @@
 ---@field add_header fun(key:string, value:string):HydrationElement
 
 ---@class HydrationModule
----@field create_hydration fun(route:string):HydrationElement
+---@field create_bridge fun(route:string,name:string | nil):HydrationElement
 ---@field inputid fun(id:string):string
 ---@field arg fun(id:string):string
 ---@field create_script fun():string

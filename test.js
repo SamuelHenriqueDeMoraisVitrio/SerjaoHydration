@@ -16,9 +16,9 @@ async function hydration_perform(route,headers){
         }
     })
 }
-async function hydration_func_teste(args){
+async function teste(args){
 let headers = {}
 	headers['teste'] =document.getElementById('aaa').value;
 	headers['b'] =args['teste'];
-await hydration_perform('teste',headers);
+await hydration_perform('/aaa',headers);
 }
