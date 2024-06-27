@@ -13,7 +13,6 @@ local function main(rq)
     local num = rq.header["nome"]
 
     if num == nil then
-
       return "Esse headernão existe", 404
     end
 

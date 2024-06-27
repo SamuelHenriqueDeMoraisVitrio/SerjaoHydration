@@ -11,4 +11,3 @@ HYDRATION_MODULE.replace_element_by_id = function (id,value)
 	  args={value=value,id=id}
 	}
 end
-
