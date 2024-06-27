@@ -12,6 +12,11 @@ local function main(rq)
 
     local num = rq.header["nome"]
 
+    if num == nil then
+
+      return "Esse headernão existe", 404
+    end
+
     local numConvertido = tonumber(num) + 1
 
     return hy.replace_element_by_id("num",h1(tostring(numConvertido), {id="num"}).render())
@@ -27,4 +32,4 @@ local function main(rq)
   )
 end
 
-serjao.server(3000, main)
+serjao.server(3000, 5000, main)
