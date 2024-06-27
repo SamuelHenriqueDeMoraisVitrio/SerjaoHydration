@@ -2,7 +2,7 @@
     let action = element["func_name"]
     let args = element["args"]
     let evaluation = action +"(args)"
-    try  {
+      try  {
         eval(evaluation)
     }catch (error){
         console.log(error)
@@ -14,8 +14,8 @@ async function hydration_perform(route,headers){
          headers: headers,
          method:"POST"
      })
-    let result_in_json = await  result.json()
 
+    let result_in_json = await  result.json()
     if(result_in_json.constructor===Object){
         hydration_generate_element_evaluation(result_in_json)
         return

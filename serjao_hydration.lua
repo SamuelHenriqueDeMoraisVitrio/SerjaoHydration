@@ -5,7 +5,7 @@ HYDRATION_SIZE = 0
 SCRIPT = ""
 HYDRATION_MODULE = {}
 
-HYDRATION_SCRIPT = "\nfunction Hydration_set_input_id(args){\n    document.getElementById(args.id).value = args.value\n}\nfunction Hydration_replace_element_by_id(args){\n    document.getElementById(args.id).innerHTML = args.value\n}\n  function hydration_generate_element_evaluation(element){\n    let action = element[\"func_name\"]\n    let args = element[\"args\"]\n    let evaluation = action +\"(args)\"\n    try  {\n        eval(evaluation)\n    }catch (error){\n        console.log(error)\n    }\n\n}\nasync function hydration_perform(route,headers){\n     let result = await  fetch(route, {\n         headers: headers,\n         method:\"POST\"\n     })\n    let result_in_json = await  result.json()\n\n    if(result_in_json.constructor===Object){\n        hydration_generate_element_evaluation(result_in_json)\n        return\n    }\n    if(result_in_json.constructor === Array){\n        result_in_json.forEach(e =>{\n            hydration_generate_element_evaluation(e)\n        })\n    }\n\n}"
+HYDRATION_SCRIPT = "\nfunction Hydration_set_input_id(args){\n    document.getElementById(args.id).value = args.value\n}\nfunction Hydration_replace_element_by_id(args){\n    document.getElementById(args.id).innerHTML = args.value\n}\n  function hydration_generate_element_evaluation(element){\n    let action = element[\"func_name\"]\n    let args = element[\"args\"]\n    let evaluation = action +\"(args)\"\n      try  {\n        eval(evaluation)\n    }catch (error){\n        console.log(error)\n    }\n\n}\nasync function hydration_perform(route,headers){\n     let result = await  fetch(route, {\n         headers: headers,\n         method:\"POST\"\n     })\n\n    let result_in_json = await  result.json()\n    if(result_in_json.constructor===Object){\n        hydration_generate_element_evaluation(result_in_json)\n        return\n    }\n    if(result_in_json.constructor === Array){\n        result_in_json.forEach(e =>{\n            hydration_generate_element_evaluation(e)\n        })\n    }\n\n}"
 
 
 
@@ -78,7 +78,7 @@ HYDRATION_MODULE.set_input_by_id = function (id,value)
 	  args={value=value,id=id}
 	}
 end
-HYDRATION_MODULE.Hydration_replace_element_by_id = function (id,value)
+HYDRATION_MODULE.replace_element_by_id = function (id,value)
 	return {
 	  func_name = "Hydration_replace_element_by_id",
 	  args={value=value,id=id}
@@ -93,10 +93,17 @@ end
 HYDRATION_MODULE.inputId = function (id)
     return "document.getElementById('"..id.."').value"
 end
+
 ---@param id string
 ---@return string
 HYDRATION_MODULE.arg = function (name)
     return "args['"..name.."']"
+end
+
+---@param id string
+---@return string
+HYDRATION_MODULE.textId = function (id)
+    return "document.getElementById('"..id.."').innerText"
 end
 
 

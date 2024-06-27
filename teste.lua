@@ -6,22 +6,25 @@ local hy = require("serjao_hydration")
 
 
 local increment = hy.create_bridge("/increment")
-increment.add_header("num_val",hy.inputId("num"))
+increment.add_header("num",hy.inputId("num"))
+increment.add_header("acumulador",hy.textId("acumulador"))
 
 
 ---@param request Request
 local function whatever_name(request)
 
-    if request.route ~= "/increment" then
-        return body(
-                script(hy.create_script()),
-                h3("0",{id="num"}),
-                button("increment ",{onclick=increment.call()})
-        )
+    if request.route == "/increment" then
+        local num = tonumber(request.header["num"])
+        local acumulador = tonumber(request.header["acumulador"])
+        return hy.replace_element_by_id("acumulador",h3(tostring(num+acumulador),{id="acumulador"}).render())
     end
 
-  return "Hello Word", 400
-
+    return body(
+            script(hy.create_script()),
+            serjao.fragment("<input value='0' id='num'>"),
+            h3("0",{id="acumulador"}),
+            button("increment ",{onclick=increment.call()})
+    )
 end
 
 serjao.server(3000,4000, whatever_name)
